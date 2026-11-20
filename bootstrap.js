@@ -5,7 +5,10 @@ const http = require("http");
 
 const port = Number(process.argv[2]);
 const domain = process.env.RAILWAY_PUBLIC_DOMAIN;
-const email = process.env.ADMIN_EMAIL.trim().toLowerCase();
+// Coral validates the address as an email with a dotted domain. A local run with RAILWAY_PUBLIC_DOMAIN=localhost gives
+// admin@localhost, which it refuses, so a dotless domain gets .example.com (Joi also checks the TLD list). A Railway domain always has dots.
+let email = process.env.ADMIN_EMAIL.trim().toLowerCase();
+if (!/@[^@.]+\.[^@]+$/.test(email)) email += ".example.com";
 const password = process.env.ADMIN_PASSWORD;
 const username = process.env.ADMIN_USERNAME || "admin";
 const siteName = process.env.SITE_NAME || "Coral";
